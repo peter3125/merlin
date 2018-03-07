@@ -137,8 +137,8 @@ fi
 # export paths
 export FESTVOXDIR=$tools_dir/festvox
 
-echo "deleting downloaded tar files..."
-rm -rf $tools_dir/*.tar.gz
+# echo "deleting downloaded tar files..."
+# rm -rf $tools_dir/*.tar.gz
 
 if [[ ! -f ${ESTDIR}/bin/ch_track ]]; then
     echo "Error installing speech tools"

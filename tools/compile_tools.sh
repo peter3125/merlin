@@ -105,8 +105,8 @@ fi
 
 
 # 5. Copy binaries
-echo "deleting downloaded tar files..."
-rm -rf $tools_dir/*.tar.gz
+# echo "deleting downloaded tar files..."
+# rm -rf $tools_dir/*.tar.gz
 
 
 

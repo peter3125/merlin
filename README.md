@@ -1,4 +1,60 @@
-[![Build Status](https://travis-ci.org/CSTR-Edinburgh/merlin.svg?branch=master)](https://travis-ci.org/CSTR-Edinburgh/merlin)
+## Setup Ubuntu 16.04
+
+clone it into `/opt/merlin`
+
+```
+sudo apt install python-pip csh realpath autotools-dev automake libncurses-dev libx11-dev gawk cmake
+# build with pyhton 2.7
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+compile tools (requires HTK downloads in `/opt/merlin/tools`)
+```
+cd /opt/merlin/tools
+./compile_htk.sh
+./compile_other_speech_tools.sh
+./compile_tools.sh
+./compile_unit_selection_tools.sh
+```
+
+setup a link because of a hardwired dependencies in festival 
+```
+sudo mkdir -p /afs/inf.ed.ac.uk/group/cstr/projects/phd/s1432486/work/Festival_Tom/
+sudo chown -R peter. /afs
+sudo ln -s /opt/merlin/tools/festival /afs/inf.ed.ac.uk/group/cstr/projects/phd/s1432486/work/Festival_Tom/
+```
+
+create user voice
+```
+cd /opt/merlin/egs/build_your_own_voice/s1/
+mkdir -p database/wav
+mkdir -p database/txt
+mkdir -p database/labels
+mkdir -p database/labels/label_state_align
+mkdir -p database/feats
+
+# proceed by extracting x wav files into the above wav directory, all 16KHz, mono 16 bit
+# and an equivalent same named number of txt files into the txt directory
+# my example here assumes 115 files total, 5 test, 5 validate (defaults) and 105 training files 
+
+export voice=jc
+
+./01_setup.sh $voice
+./02_prepare_labels.sh database/wav database/txt database/labels
+
+# step 3 doesn't work well - do it manually
+/opt/merlin/misc/scripts/vocoder/world/extract_features_for_merlin.sh /opt/merlin /opt/merlin/egs/build_your_own_voice/s1/database/wav /opt/merlin/egs/build_your_own_voice/s1/database/feats 16000
+cp -r /opt/merlin/egs/build_your_own_voice/s1/database/feats/* ./experiments/$voice/acoustic_model/data
+
+./04_prepare_conf_files.sh conf/global_settings.cfg
+sed -i 's/^Train=.*/Train=105/g' conf/*.cfg
+sed -i 's/^train_file_number.*/train_file_number: 105/g' conf/*.conf
+
+./05_train_duration_model.sh conf/duration_${voice}.conf
+./06_train_acoustic_model.sh conf/acoustic_${voice}.conf
+```
+
 
 ## Merlin: The Neural Network (NN) based Speech Synthesis System
 

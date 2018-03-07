@@ -293,7 +293,7 @@ class configuration(object):
             ('rnn_batch_training'   , False                                             , 'Architecture', 'rnn_batch_training'),
             ('dropout_rate'         , 0.0                                               , 'Architecture', 'dropout_rate'),
             ('switch_to_keras'      , False                                             , 'Architecture', 'switch_to_keras'),
-            ('switch_to_tensorflow' , False                                             , 'Architecture', 'switch_to_tensorflow'),
+            ('switch_to_tensorflow' , True                                              , 'Architecture', 'switch_to_tensorflow'),
 
             ## some config variables for token projection DNN
             ('scheme'               , 'stagewise'                   , 'Architecture', 'scheme'),

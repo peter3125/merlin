@@ -136,9 +136,9 @@ fi
 # export paths
 export MULTISYN_BUILD=$tools_dir/multisyn_build
 
-echo "deleting downloaded tar files..."
-rm -rf $tools_dir/*.tar.gz
-rm -rf $tools_dir/*.tgz
+# echo "deleting downloaded tar files..."
+# rm -rf $tools_dir/*.tar.gz
+# rm -rf $tools_dir/*.tgz
 
 if [[ ! -f ${ESTDIR}/bin/ch_track ]]; then
     echo "Error installing speech tools"
