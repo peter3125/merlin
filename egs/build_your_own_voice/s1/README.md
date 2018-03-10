@@ -1,63 +1,32 @@
-# Build your own voice
+## Build your own Voice - Setup Ubuntu 16.04
 
-To build your own voice, `cd egs/build_your_own_voice/s1` and follow the below steps:
-
-## Setting up
-
-The first step is to run setup as it creates directories and some text files for testing.
-
-The next steps demonstrate on how to setup voice. 
-
-```sh
-./01_setup.sh my_voice
 ```
+mkdir -p database/wav
+mkdir -p database/txt
+mkdir -p database/labels
+mkdir -p database/labels/label_state_align
+mkdir -p database/feats
 
-It also creates a global config file: `conf/global_settings.cfg`, where default settings are stored.
-You need to modify these params as per your own data.
+# proceed by extracting x wav files into the above wav directory, all 16KHz, mono 16 bit
+# and an equivalent same named number of txt files into the txt directory
+# my example here assumes 115 files total, 5 test, 5 validate (defaults) and 105 training files
 
-## Prepare labels
+export voice=jc
 
-To prepare labels
-```sh
-./02_prepare_labels.sh <path_to_wav_dir> <path_to_text_dir> <path_to_labels_dir>
-```
+./01_setup.sh $voice
+./02_prepare_labels.sh database/wav database/txt database/labels
 
-## Prepare acoustic features
- 
-To prepare acoustic features
-```sh
-./03_prepare_acoustic_features.sh <path_to_wav_dir> <path_to_feat_dir>
-```
+# step 3 doesn't work well - do it manually
+/opt/merlin/misc/scripts/vocoder/world/extract_features_for_merlin.sh /opt/merlin /opt/merlin/egs/build_your_own_voice/s1/database/wav /opt/merlin/egs/build_your_own_voice/s1/database/feats 16000
+cp -r /opt/merlin/egs/build_your_own_voice/s1/database/feats/* ./experiments/$voice/acoustic_model/data
 
-## Prepare config files
+# check all the required files match before running the setup files
+python consistency_check.py
 
-At this point, we have to prepare two config files to train DNN models
-- Acoustic Model
-- Duration Model
-
-To prepare config files:
-```sh
 ./04_prepare_conf_files.sh conf/global_settings.cfg
+sed -i 's/^Train=.*/Train=305/g' conf/*.cfg
+sed -i 's/^train_file_number.*/train_file_number: 305/g' conf/*.conf
+
+./05_train_duration_model.sh conf/duration_${voice}.conf
+./06_train_acoustic_model.sh conf/acoustic_${voice}.conf
 ```
-Four config files will be generated: two for training, and two for testing. 
-
-## Train duration model
-
-To train duration model:
-```sh
-./05_train_duration_model.sh <path_to_duration_conf_file>
-```
-
-## Train acoustic model
-
-To train acoustic model:
-```sh
-./06_train_acoustic_model.sh <path_to_acoustic_conf_file>
-```
-## Synthesize speech
-
-To synthesize speech:
-```sh
-./07_run_merlin.sh <path_to_text_dir> <path_to_test_dur_conf_file> <path_to_test_synth_conf_file>
-```
-
