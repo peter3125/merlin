@@ -17,3 +17,24 @@ bin/
 
 # Pycharm IDE
 .idea/
+
+.env
+
+# tools folder misc
+tools/COPYING
+tools/ChangeLog
+tools/*.patch
+tools/*.bz2
+tools/HTS_Document.pdf
+tools/INSTALL
+tools/README
+tools/REAPER/
+tools/*.gz
+tools/*.tgz
+tools/festival/
+tools/festvox/
+tools/htk/
+tools/magphase/
+tools/multisyn_build/
+tools/postfilter/
+tools/speech_tools/
